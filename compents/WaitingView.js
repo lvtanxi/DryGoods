@@ -8,14 +8,14 @@ import {
 } from 'react-native';
 export default class WaitingView extends Component {
 
-    tex=()=>{
+    _onPress=()=>{
         if(this.props.callback)
             this.props.callback.call(this)
     }
 
     render() {
         return (
-            <TouchableNativeFeedback background={TouchableNativeFeedback.SelectableBackground()} onPress={this.tex}>
+            <TouchableNativeFeedback background={TouchableNativeFeedback.SelectableBackground()} onPress={this._onPress}>
                 <View style={wStyels.container}>
                         <Text style={wStyels.text}>{this.props.hitText}</Text>
                 </View>

@@ -3,8 +3,14 @@ import {
     StyleSheet,
 } from 'react-native';
 
-export default BasicStyles = StyleSheet.create({
+export default StyleSheet.create({
     flex: {
         flex: 1
+    },
+    bg:{
+        height:55,
+        backgroundColor:"#ffffff",
+        borderBottomWidth:0.3,
+        borderBottomColor:"#CCC"
     }
 })
