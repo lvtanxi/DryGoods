@@ -7,6 +7,7 @@ import {
 } from 'react-native';
 import BaseComp from './../compents/BaseComp'
 import {CustToast} from './../compents/AndroidComp'
+import LoadingView from './../compents/LoadingView'
 export default class WebViewComp extends BaseComp {
     renderChildeView(){
         return (
@@ -18,12 +19,15 @@ export default class WebViewComp extends BaseComp {
                 javaScriptEnabled={true}
                 domStorageEnabled={true}
                 decelerationRate="normal"
+                renderLoading={()=><LoadingView/>}
                 startInLoadingState={true}
                 onNavigationStateChange={this._onNavigationStateChange}
                 onError={()=>CustToast.error("网页加载失败！")}
             />
         )
     }
+
+
     _onNavigationStateChange = (param) => {
         this.setState(param)
     }
@@ -40,6 +44,6 @@ export default class WebViewComp extends BaseComp {
 
 const wStyles = StyleSheet.create({
     web: {
-        flex: 1,
+        flex: 1
     }
 })

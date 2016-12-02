@@ -38,7 +38,7 @@ export default class HomeComp extends BaseComp {
                             <Text style={styles.input}>搜索</Text>
                         </View>
                     </TouchableNativeFeedback>
-                    <TabNavigator>
+                    <TabNavigator style={styles.bdTop}>
                         <TabNavigator.Item
                             selected={this.state.selectedTab ==="android"}
                             title="Android"
@@ -70,7 +70,7 @@ export default class HomeComp extends BaseComp {
     }
 
     toSearchComp() {
-        super.pushNavigator({name: "SearchComp", component: SearchComp,params:{title:"热门搜索"}})
+        super.pushNavigator({name: "SearchComp", component: SearchComp})
     }
 }
 
@@ -87,12 +87,16 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
     },
+    bdTop: {
+        borderTopWidth: 0.5,
+        borderTopColor: "#EEE"
+    },
     inputView: {
         height: 35,
         justifyContent: "center",
         alignItems: "center",
         flexDirection: "row",
-        borderColor: "#CCC",
+        borderColor: "#EEE",
         borderRadius: 10,
         borderWidth: 0.5,
         marginLeft: 10,

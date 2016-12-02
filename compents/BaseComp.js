@@ -93,6 +93,7 @@ const bStyles = StyleSheet.create({
         height:50,
         backgroundColor:"#ffffff",
         borderBottomWidth: 0.5,
+        marginBottom:0.5,
         borderBottomColor: "#CCC"
     }
   })

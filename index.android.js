@@ -8,7 +8,7 @@ import {
     Image
 } from 'react-native';
 
-import Util from './compents/utils'
+import Util from './compents/Utils'
 import HomeComp from './views/HomeComp'
 import BasicStyles from './styles/BasicStyles'
 

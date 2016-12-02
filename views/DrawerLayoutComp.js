@@ -1,18 +1,18 @@
 import React, {Component} from 'react'
 import {
-    AppRegistry,
     StyleSheet,
-    Image,
     Text,
+    Image,
     View
 } from 'react-native';
+
+
 export default class DrawerLayoutComp extends Component {
+
     render() {
         return (
             <View style={dStyles.flex}>
-                <View>
-                    <Image source={{uri:"http://img1.2345.com/duoteimg/qqTxImg/2013/12/ns/18-024824_754.jpg"}} style={dStyles.image}/>
-                </View>
+                  <Image source={{uri:"http://qlogo3.store.qq.com/qzone/992507862/992507862/200?1389658929"}} style={dStyles.header}/>
             </View>
         )
     }
@@ -21,11 +21,14 @@ export default class DrawerLayoutComp extends Component {
 const dStyles = StyleSheet.create({
     flex: {
         flex: 1,
+        alignItems:"center"
     },
-
-    image: {
-        width: 150,
-        width: 150,
-        backgroundColor:"red"
+    header:{
+        width:200,
+        height:200,
+        marginTop:10,
+        borderRadius:180,
+        borderColor:"#EEE",
+        borderWidth:3
     }
 })

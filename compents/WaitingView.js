@@ -1,5 +1,4 @@
 import React, {Component} from 'react'
-import px2dp from './px2dp'
 import {
     StyleSheet,
     TouchableNativeFeedback,
@@ -27,7 +26,7 @@ export default class WaitingView extends Component {
 const wStyels=StyleSheet.create({
     container:{
         flex:1,
-        height:px2dp(44),
+        height:44,
         backgroundColor:"#ffffff",
         justifyContent:"center",
         alignItems:"center"

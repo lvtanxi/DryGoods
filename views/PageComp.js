@@ -106,7 +106,7 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         padding: 10,
         borderBottomWidth: 0.5,
-        borderBottomColor: "#CCC",
+        borderBottomColor: "#EEE",
         backgroundColor: "#FFF"
     },
     right: {
