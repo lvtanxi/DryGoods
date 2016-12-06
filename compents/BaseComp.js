@@ -21,14 +21,14 @@ export default class BaseComp extends Component {
     render() {
         let statusBar = this.state.showstatusBar ? (
             <StatusBar
-                ref="StatusBar"
+                ref={(c) => this._StatusBar = c}
                 backgroundColor={this.state.statusBarColor}
                 animated={this.state.animated}
                 hidden={this.state.hidden}/>
         ) : null
         let toolbar = this.state.showToolBar ? (
             <ToolbarAndroid
-                ref="ToolbarAndroid"
+                ref={(c) => this._Toolbar = c}
                 navIcon={require('./../imgs/back.png')}
                 title={this.state.title}
                 actions={this.state.actions}
@@ -71,6 +71,16 @@ export default class BaseComp extends Component {
             navigator.push(params)
     }
 
+    pushNavigatorBrief(title, tagComponent, param) {
+        let navigator = this.props.navigator
+        if (navigator)
+            navigator.push({
+                name:title,
+                component: tagComponent,
+                params: param
+            })
+    }
+
 
     actionSelected(position) {
 
@@ -86,14 +96,14 @@ export default class BaseComp extends Component {
     }
 }
 const bStyles = StyleSheet.create({
-    flex:{
-        flex:1
+    flex: {
+        flex: 1
     },
-    toobar:{
-        height:50,
-        backgroundColor:"#ffffff",
+    toobar: {
+        height: 50,
+        backgroundColor: "#ffffff",
         borderBottomWidth: 0.5,
-        marginBottom:0.5,
+        marginBottom: 0.5,
         borderBottomColor: "#CCC"
     }
-  })
+})

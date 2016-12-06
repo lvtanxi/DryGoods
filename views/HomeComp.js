@@ -16,13 +16,11 @@ import SearchComp from './SearchComp';
 
 
 export default class HomeComp extends BaseComp {
-
-    constructor(props) {
-        super(props);
+    componentWillMount() {
         this.state = {
             selectedTab: 'android',
             showToolBar: false
-        };
+        }
     }
 
     renderChildeView() {
@@ -30,7 +28,7 @@ export default class HomeComp extends BaseComp {
             <DrawerLayoutAndroid
                 drawerWidth={300}
                 drawerPosition={DrawerLayoutAndroid.positions.Left}
-                renderNavigationView={() => <DrawerLayoutComp/>}>
+                renderNavigationView={() => <DrawerLayoutComp {...this.props}/>}>
                 <View style={styles.flex}>
                     <TouchableNativeFeedback onPress={this.toSearchComp.bind(this)} background={TouchableNativeFeedback.SelectableBackground()}>
                         <View style={styles.inputView} >

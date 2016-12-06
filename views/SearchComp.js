@@ -45,8 +45,7 @@ export default class SearchComp extends BaseComp {
                         renderRow={this.renderRow}
                         contentContainerStyle={sStyles.listStyle}
                         renderSectionHeader={this.renderSectionHeader}/>
-                    {this.state.showImageDialog ?
-                        <ImageDialog closeDialog={this.closeDialog} url={this.state.imageUrl}/> : null}
+                    <ImageDialog url={this.state.imageUrl} ref="dialog"/>
                 </View>
                 : <LoadingView />
         )
@@ -80,11 +79,6 @@ export default class SearchComp extends BaseComp {
         }
     }
 
-    closeDialog = () => {
-        this.setState({
-            showImageDialog: false
-        })
-    }
 
     renderSectionHeader = (sectionData) => {
         return (
@@ -97,9 +91,10 @@ export default class SearchComp extends BaseComp {
     onItemPress(tagUrl, isImage) {
         if (isImage) {
             this.setState({
-                showImageDialog: true,
                 imageUrl: tagUrl
             })
+            if(this.refs.dialog)
+                this.refs.dialog.show()
         } else {
             super.pushNavigator({
                 name: 'WebViewComp',
@@ -115,7 +110,7 @@ export default class SearchComp extends BaseComp {
         this.httpData(DateUtils.currentDate("yyyy/MM/dd"))
     }
 
-    httpData(date){
+    httpData(date) {
         new HttpUtils()
             .bindUrl(`http://gank.io/api/day/${date}`)
             .bindOnSuccess(datas => this.loadDataFormJson(datas))
@@ -153,14 +148,14 @@ export default class SearchComp extends BaseComp {
     async showDatePicker() {
         try {
             let date = this.state.year ? new Date(this.state.year, this.state.month, this.state.day) : new Date()
-            const {action, year, month, day} = await DatePickerAndroid.open({date:date,maxDate: new Date()});
+            const {action, year, month, day} = await DatePickerAndroid.open({date: date, maxDate: new Date()});
             if (action === DatePickerAndroid.dateSetAction) {
                 this.setState({
                     year: year,
                     month: month,
                     day: day
                 });
-                this.httpData(`${year}/${month}/${day}`)
+                this.httpData(`${year}/${month + 1}/${day}`)
             }
         } catch ({code, message}) {
             CustToast.error(message);
