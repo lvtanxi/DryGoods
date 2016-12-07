@@ -11,30 +11,51 @@ import {
 } from 'react-native'
 
 import {CustToast} from './../compents/AndroidComp'
-import LoadingDialog from './../compents/LoadingDialog'
+import HttpUtils from './../compents/HttpUtils'
 
-let Task={
-    createAt:"",
-    message:""
+let Task = {
+    createAt: "",
+    message: ""
 }
 
 export default class TaskDetailComp extends BaseComp {
     componentWillMount() {
         this.setState({
             title: this.props.task ? "任务详情" : "新增",
-            edit: false,
-            showLoading: false,
+            edit: this.props.task ? false : true,
             height: 40,
+            createAt: "请选择时间",
             actions: [{title: this.props.task ? "编辑" : '完成', show: 'always'}]
         })
     }
 
     actionSelected(position) {
-        this.setState({
-            edit: !this.state.edit,
-            actions: [{title: this.state.edit ? "编辑" : '保存', show: 'always'}],
-        })
-        CustToast.success("成功了喔！")
+        if (this.props.task && !this.state.edit) {
+            this.setState({
+                edit: true,
+                actions: [{title: '保存', show: 'always'}],
+            })
+            Task = this.props.task
+            return
+        }
+        if (Task.createAt === "") {
+            CustToast.warning("请选择创建时间")
+        } else if (Task.message === "") {
+            CustToast.warning("请输入任务内容")
+        } else {
+            let that = this
+            new HttpUtils()
+                .psot()
+                .bindUrl("http://10.13.0.48:3000/task/saveOrUpdate")
+                .bindParams(Task)
+                .bindOnSuccess(() => {
+                    CustToast.success("操作成功！")
+                    that.props.re()
+                    super.handleBack()
+                })
+                .execute(this.refs.LoadingDialog)
+        }
+
     }
 
     renderChildeView() {
@@ -44,7 +65,7 @@ export default class TaskDetailComp extends BaseComp {
                     <Text >创建时间:</Text>
                 </View>
                 <View style={eStyles.lable_date}>
-                    <Text>{this.state.createAt || this.props.task.createAt}</Text>
+                    <Text>{this.state.title === "任务详情" ? this.props.task.createAt : this.state.createAt}</Text>
                     {this.state.edit ?
                         <TouchableNativeFeedback background={TouchableNativeFeedback.SelectableBackgroundBorderless()}
                                                  onPress={this.chooseDate.bind(this)}>
@@ -57,7 +78,7 @@ export default class TaskDetailComp extends BaseComp {
                 </View>
                 <View>
                     <TextInput
-                        onChangeText={(text)=>Task.message=text}
+                        onChangeText={(text) => Task.message = text}
                         style={[eStyles.input, {height: this.state.height}]}
                         multiline={true}
                         maxLength={100}
@@ -65,15 +86,12 @@ export default class TaskDetailComp extends BaseComp {
                         editable={this.state.edit}
                         placeholder={"请输入任务内容......."}
                         onChange={this.onChange.bind(this)}>
-                        {this.props.task.message}
+                        {this.state.title === "任务详情" ? this.props.task.message : ""}
                     </TextInput>
                 </View>
-                <LoadingDialog ref={(v) => this.dialog = v}/>
             </View>
         )
     }
-
-
 
 
     onChange(event) {
@@ -104,7 +122,7 @@ export default class TaskDetailComp extends BaseComp {
                     day: day,
                     createAt: `${year}-${month + 1}-${day}`
                 })
-                Task.createAt=this.state.createAt
+                Task.createAt = this.state.createAt
             }
         } catch ({code, message}) {
             CustToast.error(message)
@@ -114,28 +132,26 @@ export default class TaskDetailComp extends BaseComp {
 const eStyles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: "#ffffff"
     },
     lable: {
         height: 40,
         paddingLeft: 15,
-        backgroundColor: "#EEE",
-        justifyContent: "center",
-        borderColor: "#E8E8E8",
-        borderWidth: 0.5
+        backgroundColor: "#e8e8e8",
+        justifyContent: "center"
     },
     lable_date: {
         height: 40,
         paddingLeft: 30,
         flexDirection: "row",
-        alignItems: "center"
+        alignItems: "center",
+        backgroundColor: "#ffffff"
     },
     input: {
         marginLeft: 25,
         marginRight: 15,
         marginTop: 10,
         borderColor: "#EEE",
-        borderWidth: 0.5,
+        backgroundColor: "#ffffff",
         borderRadius: 5
     },
     date_image: {
@@ -144,5 +160,5 @@ const eStyles = StyleSheet.create({
         top: 10,
         position: "absolute",
         right: 40
-    }
+    },
 })

@@ -1,4 +1,5 @@
 import React, {Component} from 'react'
+import LoadingDialog from './LoadingDialog'
 import {
     StyleSheet,
     Modal,
@@ -10,20 +11,22 @@ import Utils from './../compents/Utils'
 export default class BaseDialog extends Component {
 
     state = {
-        showLoading: false
+        showLoading: false,
+        animationType:"slide"
     }
 
     render() {
         const {opacity, backgroundColor} = this.props
         return (
-            <Modal onRequestClose={() => this.dimss()} visible={this.state.showLoading} transparent
-                   animationType={"slide"}>
+            <Modal onRequestClose={() => this.dismiss()} visible={this.state.showLoading} transparent
+                   animationType={this.state.animationType}>
                 <View style={ [bStyles.confirmCont, {
                     opacity: opacity || 0.5,
                     backgroundColor: backgroundColor || 'gray'
                 }]}></View>
                 <View style={ bStyles.loadingImageView }>
                     {this.renderChildView()}
+                    <LoadingDialog ref="LoadingDialog"/>
                 </View>
             </Modal>
         )
@@ -40,11 +43,11 @@ export default class BaseDialog extends Component {
         })
     }
 
-    startAnim(){
+    startAnim() {
 
     }
 
-    cancelAnim(){
+    cancelAnim() {
 
     }
 
@@ -52,7 +55,7 @@ export default class BaseDialog extends Component {
         return this.state.showLoading
     }
 
-    dimss() {
+    dismiss() {
         this.cancelAnim()
         this.setState({
             showLoading: false

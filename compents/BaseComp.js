@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
+import LoadingDialog from './LoadingDialog'
 import {
-    AppRegistry,
     BackAndroid,
     ToolbarAndroid,
     StyleSheet,
@@ -29,7 +29,7 @@ export default class BaseComp extends Component {
         let toolbar = this.state.showToolBar ? (
             <ToolbarAndroid
                 ref={(c) => this._Toolbar = c}
-                navIcon={require('./../imgs/back.png')}
+                navIcon={require('./../imgs/new_back.png')}
                 title={this.state.title}
                 actions={this.state.actions}
                 style={bStyles.toobar}
@@ -42,6 +42,7 @@ export default class BaseComp extends Component {
                 {statusBar}
                 {toolbar}
                 {this.renderChildeView()}
+                <LoadingDialog ref="LoadingDialog"/>
             </View>
         )
     }
@@ -97,7 +98,8 @@ export default class BaseComp extends Component {
 }
 const bStyles = StyleSheet.create({
     flex: {
-        flex: 1
+        flex: 1,
+        backgroundColor: "#F8F8F8"
     },
     toobar: {
         height: 50,

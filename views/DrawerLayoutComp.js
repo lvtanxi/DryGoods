@@ -9,25 +9,35 @@ import {
 
 import BaseComp from './../compents/BaseComp'
 import TasksComp from './TasksComp'
+import LoginComp from './user/LoginComp'
 
 
 export default class DrawerLayoutComp extends BaseComp {
     componentWillMount() {
         this.setState({
             showToolBar: false,
-            messages: ["任务列表"]
+            messages: [{
+                title: "任务列表",
+                name: "TasksComp",
+                cont: TasksComp
+            }, {
+                title: "通讯录",
+                name: "LoginComp",
+                cont: LoginComp
+            }]
         })
     }
 
     renderChildeView() {
         return (
             <View style={dStyles.flex}>
-                <Text style={dStyles.header}>Node中间层的基本使用</Text>
+                <Text style={dStyles.header}>Node基本使用</Text>
                 <ScrollView style={dStyles.scro}>
                     {this.state.messages.map(item => {
                         return (
-                            <TouchableNativeFeedback onPress={this.itemPress.bind(this)} background={TouchableNativeFeedback.SelectableBackground()}>
-                                <Text style={dStyles.scro_item}>{item}</Text>
+                            <TouchableNativeFeedback onPress={this.itemPress.bind(this,item)}
+                                                     background={TouchableNativeFeedback.SelectableBackground()}>
+                                <Text style={dStyles.scro_item}>{item.title}</Text>
                             </TouchableNativeFeedback>
                         )
                     })}
@@ -35,8 +45,9 @@ export default class DrawerLayoutComp extends BaseComp {
             </View>
         )
     }
-    itemPress(){
-       super.pushNavigator({name:"TasksComp",component:TasksComp})
+
+    itemPress(item) {
+        super.pushNavigatorBrief(item.title,item.cont)
     }
 }
 
@@ -54,6 +65,7 @@ const dStyles = StyleSheet.create({
         marginTop: 20
     },
     scro_item: {
+        marginTop:5,
         paddingTop: 10,
         paddingBottom: 10,
         paddingRight: 25,

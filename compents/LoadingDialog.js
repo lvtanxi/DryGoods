@@ -15,6 +15,7 @@ export default class LoadingDialog extends BaseDialog {
     componentWillMount() {
         this.setState({
             bounceValue: new Animated.Value(0),//这里设定了动画的输入初始值，注意不是数字0
+            animationType:"fade"
         })
     }
 

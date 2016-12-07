@@ -3,6 +3,7 @@ import { requireNativeComponent, Image ,NativeModules} from 'react-native';
 
 
 export const CustToast = NativeModules.CustToast
+export const LoadingDialog = NativeModules.LoadingDialog
 
 
 

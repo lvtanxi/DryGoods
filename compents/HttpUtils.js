@@ -4,6 +4,7 @@ import {CustToast} from './AndroidComp';
 export default class HttpUtils {
     constructor() {
         this.method = "GET"
+        this.headers = new Headers()
     }
 
     bindUrl(url) {
@@ -11,15 +12,17 @@ export default class HttpUtils {
         return this
     }
 
+
     bindHeaders(headers) {
         this.headers = headers;
         return this
     }
 
-    bindMethod(method) {
-        this.method = method
-        return this
+    psot() {
+        this.method = "POST"
+        return this;
     }
+
 
     bindParams(params) {
         this.params = params
@@ -41,38 +44,62 @@ export default class HttpUtils {
         return this;
     }
 
-    execute() {
-        let bodyJson =null
-        if ("GET"===this.method && this.params) {
-            var names = "";
-            for (let name in this.params) {
-                names += name + "=" + this.params[name] + "&";
-            }
-            this.url += "?" + names.substring(0, names.length - 1)
-        }else if(this.params && "POST"=== this.method){
-            bodyJson=JSON.stringify(this.params)
-        }
+    dismissDialog(success) {
+        if (this.dialog && this.dialog.isShow())
+            this.dialog.dismiss()
+        if (this.onFinish)
+            this.onFinish(success)
+    }
+
+    showDialog(dialog) {
+        this.dialog = dialog
+        if (this.dialog && !this.dialog.isShow())
+            this.dialog.show()
+    }
+
+    execute(dialog) {
+        this.handlerParam(dialog)
         let that = this
-        fetch(this.url,
-            {
-                method: that.method,
-                headers: that.headers,
-                body: bodyJson
+        fetch(this.url, {
+            method: that.method,
+            headers: that.headers,
+            body: that.bodyJson
+        })
+            .then((response) => {
+                if (response.ok)
+                    return response.json();
+                throw new Error("服务器异常")
             })
-            .then((response) => response.json())
             .then((responseJson) => {
+                if (responseJson.code && responseJson.code !== 200)
+                    throw new Error(responseJson.message)
                 if (that.onSuccess)
                     that.onSuccess(responseJson.results)
-                if (that.onFinish)
-                    that.onFinish(true)
+                that.dismissDialog(true)
             })
             .catch((error) => {
                 console.log(error.toString())
-                CustToast.error(error.toString())
+                CustToast.error(error.message)
                 if (that.onError)
                     that.onError(error)
-                if (that.onFinish)
-                    that.onFinish(false)
-            })
+                that.dismissDialog(false)
+            }).done()
+    }
+
+    handlerParam(dialog) {
+        this.showDialog(dialog)
+        if ("GET" === this.method && this.params) {
+            let paramsArray = [];
+            Object.keys(this.params).forEach(key => paramsArray.push(key + '=' + this.params[key]))
+            if (this.url.search(/\?/) === -1) {
+                this.url += '?' + paramsArray.join('&')
+            } else {
+                this.url += '&' + paramsArray.join('&')
+            }
+        } else if (this.params && "POST" === this.method) {
+            this.headers.append('Accept', 'application/json')
+            this.headers.append('Content-Type', 'application/json')
+            this.bodyJson = JSON.stringify(this.params)
+        }
     }
 }
