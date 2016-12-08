@@ -3,7 +3,6 @@ import BaseComp from './../../compents/BaseComp'
 import {CustToast} from './../../compents/AndroidComp'
 import HttpUtils from './../../compents/HttpUtils'
 import BasicStyles from './../../styles/BasicStyles'
-import Button from 'apsl-react-native-button'
 import RegisterDialog from './RegisterDialog'
 import ContactComp from './ContactComp'
 import CheckBox from './../../compents/CheckBox'
@@ -15,13 +14,14 @@ import {
     Text,
     AsyncStorage,
     TouchableOpacity,
+    Button,
     ART,
     View
 } from 'react-native'
 const AsyncStorageKey ="USER"
 let user = {
-    userName: "",
-    passWorld: ""
+    userName: "lvy",
+    passWorld: "123456"
 }
 export default class LoginComp extends BaseComp {
     componentWillMount() {
@@ -29,24 +29,25 @@ export default class LoginComp extends BaseComp {
             title: "登录界面",
             userName:""
         })
-        AsyncStorage.getItem(AsyncStorageKey)
+    /*    AsyncStorage.getItem(AsyncStorageKey)
             .then((value) =>this.setState({
                 userName:value
             }))
-            .done();
+            .done();*/
     }
 
     renderChildeView() {
-        user.userName=this.state.userName
         return (
             <View>
                 <View style={BasicStyles.center_container}>
                     <Image source={require("./../../imgs/onepiece.jpg")} style={lStyles.img}/>
                 </View>
-                <Input leftText={"姓名"} onChangeText={(text) => user.userName = text}  placeholder={"请输入姓名"} defaultValue={this.state.userName}/>
-                <Input leftText={"密码"} onChangeText={(text) => user.passWorld = text}  placeholder={"请输入密码"} secureTextEntry={true}/>
-                <Button style={lStyles.login_btn} textStyle={lStyles.textStyle}
-                        onPress={this.doLogin.bind(this)}>登录</Button>
+                <Input leftText={"姓名"}   placeholder={"请输入姓名"} defaultValue={this.state.userName}/>
+                <Input leftText={"密码"}   placeholder={"请输入密码"} secureTextEntry={true}/>
+                <View  style={lStyles.login_btn}>
+                    <Button
+                            onPress={this.doLogin.bind(this)} title="登录"/>
+                </View>
                 <View>
                     <CheckBox
                         style={lStyles.box}
@@ -124,14 +125,9 @@ const lStyles = StyleSheet.create({
         marginLeft: 10,
     },
     login_btn: {
-        marginTop: 10,
-        marginLeft: 50,
-        marginRight: 50,
-        borderColor: '#27ae60',
-        backgroundColor: '#2ecc71'
-    },
-    textStyle: {
-        color: 'white'
+        marginLeft: 40,
+        marginRight: 40,
+        padding:10,
     },
     register:{
         marginTop:10,

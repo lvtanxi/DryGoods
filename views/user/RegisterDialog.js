@@ -1,11 +1,11 @@
 import React, {Component} from 'react'
 import BaseDialog from './../../compents/BaseDialog'
-import Button from 'apsl-react-native-button'
 import {CustToast} from './../../compents/AndroidComp'
 import HttpUtils from './../../compents/HttpUtils'
 import {
     StyleSheet,
     TextInput,
+    Button,
     Text,
     View
 } from 'react-native';
@@ -47,7 +47,7 @@ export default class RegisterDialog extends BaseDialog {
                 </View>
                 <View style={rStyles.btn_view}>
                     <Button style={rStyles.login_btn} textStyle={rStyles.textStyle}
-                            onPress={this.doRegister.bind(this)}>注册</Button>
+                            onPress={this.doRegister.bind(this)} title="注册"/>
                 </View>
             </View>
         )
@@ -98,14 +98,11 @@ const rStyles = StyleSheet.create({
     btn_view:{
         borderTopWidth: 0.5,
         borderTopColor: "#EEE",
-        backgroundColor: "#ffffff"
-    },
-    login_btn: {
-        marginTop:10,
-        marginLeft: 50,
-        marginRight: 50,
-        borderColor: '#c0392b',
-        backgroundColor: '#e74c3c'
+        backgroundColor: "#ffffff",
+        paddingTop:10,
+        paddingLeft: 50,
+        paddingRight: 50,
+        paddingBottom:10
     },
     textStyle: {
         color: 'white'
