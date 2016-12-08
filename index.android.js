@@ -11,6 +11,7 @@ import {
 import Util from './compents/Utils'
 import HomeComp from './views/HomeComp'
 import BasicStyles from './styles/BasicStyles'
+import {SplashScreen} from './compents/AndroidComp';
 
 class LaunchView extends Component {
     state = {
@@ -20,12 +21,7 @@ class LaunchView extends Component {
     render() {
         return (
             this.state.showImage ?
-                <View>
-                    <StatusBar
-                        backgroundColor="rgba(0, 0, 0, 0)"
-                        translucent={true}/>
-                    <Image style={launchCompSt.lau} source={require("./imgs/onepiece.jpg")}/>
-                </View> :
+                null :
                 <LaunchComp />
         )
     }
@@ -35,7 +31,8 @@ class LaunchView extends Component {
             this.setState({
                 showImage: false
             })
-        }, 800)
+            SplashScreen.hide();
+        }, 1000)
     }
 
     componentWillUnmount() {

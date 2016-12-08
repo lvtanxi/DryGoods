@@ -40,7 +40,7 @@ public class CustImage extends SimpleViewManager<ImageView> {
         Glide.with(view.getContext())
                 .load(url)
                 .centerCrop()
-                .placeholder(R.mipmap.ic_launcher)
+                .placeholder(R.mipmap.user_article_no_data)
                 .crossFade()
                 .into(view);
     }

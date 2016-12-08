@@ -1,11 +1,10 @@
-import React, {Component,PropTypes } from 'react'
-import { requireNativeComponent, Image ,NativeModules} from 'react-native';
+import React, {Component, PropTypes} from 'react'
+import {requireNativeComponent, Image, NativeModules} from 'react-native';
 
 
 export const CustToast = NativeModules.CustToast
-export const LoadingDialog = NativeModules.LoadingDialog
 
-
+export const SplashScreen = NativeModules.SplashScreen;
 
 let iface = {
     name: 'ImageView',
