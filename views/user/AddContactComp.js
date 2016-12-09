@@ -1,5 +1,4 @@
 import React, {Component} from 'react'
-import LinkedStateMixin from 'react-addons-linked-state-mixin'
 import BaseComp from './../../compents/BaseComp'
 import {
     StyleSheet,
