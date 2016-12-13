@@ -14,7 +14,7 @@ import {ImageView} from './../compents/AndroidComp'
 import BaseDialog from './../compents/BaseDialog'
 import Utils from './../compents/Utils'
 import ImageZoom from 'react-native-image-pan-zoom';
-
+import Icon from 'react-native-vector-icons/Ionicons';
 export default class ImageDialog extends BaseDialog {
     static propTypes = {
         url: React.PropTypes.string
@@ -24,6 +24,7 @@ export default class ImageDialog extends BaseDialog {
         this.setState({
             fadeAnim: new Animated.Value(0)
         })
+        Icon.getImageSource('md-close-circle', 25, "rgb(51,154,237)").then((source) => this.setState({circleClose: source}));
     }
 
     renderChildView() {
@@ -45,8 +46,8 @@ export default class ImageDialog extends BaseDialog {
                     <ImageView url={this.props.url}
                                style={[iStyles.image, {resizeMode: 'cover'}]}/>
                 </ImageZoom>
-                <TouchableOpacity style={iStyles.close} onPress={this.dimss.bind(this)}>
-                    <Image source={require("./../imgs/close.png")} style={iStyles.closeImage}/>
+                <TouchableOpacity style={iStyles.close} onPress={this.dismiss.bind(this)}>
+                    <Image source={this.state.circleClose} style={iStyles.closeImage}/>
                 </TouchableOpacity>
             </Animated.View>
         )
@@ -74,13 +75,13 @@ const iStyles = StyleSheet.create({
     close: {
         position: 'absolute',
         bottom: 100,
-        left: (Utils.size.width - 20) / 2,
-        width: 20,
-        height: 20
+        left: (Utils.size.width - 40) / 2,
+        width: 40,
+        height: 40
     },
 
     closeImage: {
-        width: 15,
-        height: 15
+        width: 25,
+        height: 25
     }
 })

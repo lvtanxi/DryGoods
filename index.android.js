@@ -8,7 +8,6 @@ import {
     Image
 } from 'react-native';
 
-import Util from './compents/Utils'
 import HomeComp from './views/HomeComp'
 import BasicStyles from './styles/BasicStyles'
 import {SplashScreen} from './compents/AndroidComp';
@@ -32,7 +31,7 @@ class LaunchView extends Component {
                 showImage: false
             })
             SplashScreen.hide();
-        }, 1000)
+        }, 800)
     }
 
     componentWillUnmount() {
@@ -46,7 +45,7 @@ class LaunchComp extends Component {
         return (
             <View style={BasicStyles.flex}>
                 <StatusBar
-                    backgroundColor="rgba(0, 0, 0, 0.2)"
+                    backgroundColor="rgb(51,154,237)"
                     animated={true}
                     hidden={false}/>
                 <Navigator
@@ -62,12 +61,6 @@ class LaunchComp extends Component {
     }
 }
 
-const launchCompSt = StyleSheet.create({
-    lau: {
-        width: Util.size.width,
-        height: Util.size.height
-    },
-})
 
 
 AppRegistry.registerComponent('DryGoods', () => LaunchView);

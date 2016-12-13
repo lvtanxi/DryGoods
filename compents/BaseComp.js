@@ -11,35 +11,24 @@ export default class BaseComp extends Component {
     state = {
         title: this.props.title,
         actions: [],
-        showstatusBar: false,
         showToolBar: true,
-        statusBarColor: "rgba(0, 0, 0, 0.2)",
-        animated: true,
-        hidden: false
     }
 
     render() {
-        let statusBar = this.state.showstatusBar ? (
-            <StatusBar
-                ref={(c) => this._StatusBar = c}
-                backgroundColor={this.state.statusBarColor}
-                animated={this.state.animated}
-                hidden={this.state.hidden}/>
-        ) : null
         let toolbar = this.state.showToolBar ? (
             <ToolbarAndroid
                 ref={(c) => this._Toolbar = c}
-                navIcon={require('./../imgs/new_back.png')}
+                navIcon={require('./../imgs/back_new.png')}
                 title={this.state.title}
                 actions={this.state.actions}
                 style={bStyles.toobar}
+                titleColor={"#ffffff"}
                 onActionSelected={this.actionSelected.bind(this)}
                 onIconClicked={this.handleBack.bind(this)}/>
         ) : null
 
         return (
             <View style={bStyles.flex}>
-                {statusBar}
                 {toolbar}
                 {this.renderChildeView()}
                 <LoadingDialog ref="LoadingDialog"/>
@@ -103,7 +92,7 @@ const bStyles = StyleSheet.create({
     },
     toobar: {
         height: 50,
-        backgroundColor: "#ffffff",
+        backgroundColor: "rgb(51,154,237)",
         borderBottomWidth: 0.5,
         marginBottom: 0.5,
         borderBottomColor: "#CCC"

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
+    <meta name="render" content="webkit">
+</head>
+<body>
+
+</body>
+<script>
+    var data =new Date()
+    var day = data.getHours() < 12 ? 0 : data.getDay();
+    var yesterday_milliseconds=data.getTime()
+    if (day < 2) {
+        yesterday_milliseconds = yesterday_milliseconds - 1000 * 60 * 60 * 24 * (day + 2);
+    }
+    var yesterday = new Date();
+    yesterday.setTime(yesterday_milliseconds);
+    var strYear = yesterday.getFullYear();
+    var strDay = yesterday.getDate();
+    var strMonth = yesterday.getMonth() + 1;
+    if (strMonth < 10) {
+        strMonth = "0" + strMonth;
+    }
+    var strYesterday = strYear + "-" + strMonth + "-" + strDay;
+    console.log(strYesterday);
+</script>
+<script>
+        var  Arr = {},
+            sectionIDs =[],//所有区ID的数组
+            rowIDs =[];//行ID数组
+        //通过两次for循环创建假数据
+        for (var i = 0; i< 10; i++){
+            sectionIDs.push(i);
+            Arr[i] = 'section' + i;
+            rowIDs[i] = [];
+            for (var j= 0; j<5; j++){
+                rowIDs[i].push(j);
+                Arr[i +':' +j] = 'section' + i + '--row' + j;
+            }
+        }
+        console.log(Arr)
+</script>
+</html>

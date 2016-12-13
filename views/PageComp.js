@@ -14,6 +14,7 @@ import DateUtils from './../compents/DateUtils'
 import WebViewComp from './WebViewComp'
 
 
+
 export default class PageComp extends BaseListComp {
     componentWillMount() {
         this.state = {
@@ -22,24 +23,24 @@ export default class PageComp extends BaseListComp {
         }
     }
 
-    _onFetch(page = 1, callback, options) {
+    _onFetch(page = 1, endRefresh, options) {
         new HttpUtils()
             .bindUrl(this.props.url + DateUtils.addDateStr(-(page - 1)))
-            .bindOnSuccess(datas => callback(datas))
+            .bindOnSuccess(datas => endRefresh(datas))
             .bindOnError(() => {
-                super._onError(page, callback)
+                endRefresh()
             })
             .execute()
     }
 
-    _onPress = (tagUrl) => {
+    _onPress = (rowData) => {
         let navigator = this.props.navigator
         if (navigator) {
             navigator.push({
                 name: 'WebViewComp',
                 component: WebViewComp,
                 params: {
-                    url: tagUrl
+                    rowData: rowData
                 }
             })
         }
@@ -49,7 +50,7 @@ export default class PageComp extends BaseListComp {
         let that = this;
         return (
             <TouchableNativeFeedback background={TouchableNativeFeedback.SelectableBackground()}
-                                     onPress={() => that._onPress(rowData.url)}>
+                                     onPress={() => that._onPress(rowData)}>
                 <View style={styles.row}>
                     <View>
                         <ImageView style={[styles.imageStyle, {resizeMode: 'cover'}]}

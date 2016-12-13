@@ -29,7 +29,7 @@ export default class TasksComp extends BaseListComp {
                 allLoaded: datas.length != 10,
             }))
             .bindOnError(() => {
-                super._onError(page, callback)
+                callback()
             })
             .execute()
     }

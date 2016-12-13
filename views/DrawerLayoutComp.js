@@ -33,10 +33,10 @@ export default class DrawerLayoutComp extends BaseComp {
             <View style={dStyles.flex}>
                 <Text style={dStyles.header}>Node基本使用</Text>
                 <ScrollView style={dStyles.scro}>
-                    {this.state.messages.map(item => {
+                    {this.state.messages.map((item,index) => {
                         return (
                             <TouchableNativeFeedback onPress={this.itemPress.bind(this,item)}
-                                                     background={TouchableNativeFeedback.SelectableBackground()}>
+                                                     background={TouchableNativeFeedback.SelectableBackground()} key={index}>
                                 <Text style={dStyles.scro_item}>{item.title}</Text>
                             </TouchableNativeFeedback>
                         )

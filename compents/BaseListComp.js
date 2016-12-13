@@ -6,51 +6,53 @@ import {
     View
 } from 'react-native'
 
-import GiftedListView from 'react-native-gifted-listview'
-import WaitingView from './WaitingView'
+import RefreshListView from './RefreshListView'
+import BasicStyles from './../styles/BasicStyles'
 
 export default class BaseListComp extends BaseComp {
 
+    componentWillMount() {
+        this.setState({
+            withSections:false,
+            contentContainerStyle:null
+        })
+    }
+
     renderChildeView() {
         return (
-            <GiftedListView
-                ref={(c) => this._ListView = c}
-                rowView={this._renderRowView.bind(this)}
-                onFetch={this._onFetch.bind(this)}
-                firstLoader={true} // display a loader for the first fetching
-                pagination={true} // enable infinite scrolling using touch to load more
-                refreshable={true} // enable pull-to-refresh for iOS and touch-to-refresh for Android
-                withSections={false} // enable sections
-                enabledEmptySections={false}
-                paginationWaitingView={this._paginationWaitingView}
-                paginationAllLoadedView={this._paginationAllLoadedView}
-                refreshableColors={['#ff0000', '#00ff00', '#0000ff']}/>
+            <View style={BasicStyles.flex}>
+                <RefreshListView
+                    ref={(c) => this._ListView = c}
+                    rowView={this._renderRowView.bind(this)}
+                    onFetch={this._onFetch.bind(this)}
+                    firstLoader={true}
+                    renderSectionHeader={this._renderSectionHeader.bind(this)}
+                    pagination={true}
+                    refreshable={true}
+                    contentContainerStyle={this.state.contentContainerStyle}
+                    withSections={this.state.withSections}
+                    refreshableColors={['#ff0000', '#00ff00', '#0000ff']}/>
+                {this.renderOtherChildeView()}
+            </View>
         )
     }
 
-    _onError(page,callback){
-        callback()
-        if (this.state._ListView)
-            this.state._ListView._setPage(page - 1)
+
+    renderOtherChildeView(){
+
     }
+
 
     _renderRowView(rowData) {
 
     }
 
-    _onFetch(page = 1, callback, options) {
+    _onFetch(page = 1, endRefresh, options) {
 
     }
 
-    _paginationAllLoadedView = () => {
-        return (
-            <WaitingView hitText="没有更多数据了..."/>
-        )
-    }
-    _paginationWaitingView = (paginateCallback) => {
-        return (
-            <WaitingView hitText="加载更多" callback={paginateCallback}/>
-        )
+    _renderSectionHeader() {
+        return null
     }
 
 }

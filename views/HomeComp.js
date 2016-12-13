@@ -13,14 +13,24 @@ import PageComp from './PageComp';
 import DrawerLayoutComp from './DrawerLayoutComp';
 import BaseComp from './../compents/BaseComp';
 import SearchComp from './SearchComp';
-
+import Icon from 'react-native-vector-icons/Ionicons';
+ const [normal, selected] =["rgba(0, 0, 0, 0.2)","rgb(51,154,237)"];
 
 export default class HomeComp extends BaseComp {
     componentWillMount() {
         this.state = {
-            selectedTab: 'android',
+            selectedTab: 'Android',
             showToolBar: false
         }
+        Icon.getImageSource('logo-android', 50,normal).then((source) => this.setState({homeNormal: source}));
+        Icon.getImageSource('logo-android', 50, selected).then((source) => this.setState({homeSelected: source}));
+        Icon.getImageSource('logo-apple', 50,normal).then((source) => this.setState({compassNormal: source}));
+        Icon.getImageSource('logo-apple', 50, selected).then((source) => this.setState({compassSelected: source}));
+        Icon.getImageSource('md-list-box', 50,normal).then((source) => this.setState({moreNormal: source}));
+        Icon.getImageSource('md-list-box', 50, selected).then((source) => this.setState({moreSelected: source}));
+        Icon.getImageSource('md-calendar', 50,normal).then((source) => this.setState({collectionNormal: source}));
+        Icon.getImageSource('md-calendar', 50, selected).then((source) => this.setState({collectionSelected: source}));
+        Icon.getImageSource('md-search', 20, selected).then((source) => this.setState({search: source}));
     }
 
     renderChildeView() {
@@ -29,38 +39,19 @@ export default class HomeComp extends BaseComp {
                 drawerWidth={300}
                 drawerPosition={DrawerLayoutAndroid.positions.Left}
                 renderNavigationView={() => <DrawerLayoutComp {...this.props}/>}>
-                <View style={styles.flex}>
-                    <TouchableNativeFeedback onPress={this.toSearchComp.bind(this)} background={TouchableNativeFeedback.SelectableBackground()}>
-                        <View style={styles.inputView} >
-                            <Image source={require("./../imgs/search.png")}/>
+                <View style={[styles.flex,styles.inputP]}>
+                    <TouchableNativeFeedback onPress={this.toSearchComp.bind(this)}
+                                             background={TouchableNativeFeedback.SelectableBackground()}>
+                        <View style={styles.inputView}>
+                            <Image source={this.state.search} style={styles.tabBarItemIcon}/>
                             <Text style={styles.input}>搜索</Text>
                         </View>
                     </TouchableNativeFeedback>
                     <TabNavigator style={styles.bdTop}>
-                        <TabNavigator.Item
-                            selected={this.state.selectedTab ==="android"}
-                            title="Android"
-                            renderIcon={() => <Image style={styles.img} source={require("./../imgs/android_n.png")} />}
-                            renderSelectedIcon={() => <Image style={styles.img} source={require("./../imgs/android_p.png")} />}
-                            onPress={() => this.setState({ selectedTab: "android" })}>
-                            <PageComp url="http://gank.io/api/data/Android/" {...this.props}/>
-                        </TabNavigator.Item>
-                        <TabNavigator.Item
-                            selected={this.state.selectedTab === 'ios'}
-                            renderIcon={() => <Image style={styles.img} source={require("./../imgs/ios_n.png")} />}
-                            renderSelectedIcon={() => <Image style={styles.img} source={require("./../imgs/ios_p.png")} />}
-                            title="IOS"
-                            onPress={() => this.setState({ selectedTab: 'ios' })}>
-                            <PageComp url="http://gank.io/api/data/iOS/" {...this.props}/>
-                        </TabNavigator.Item>
-                        <TabNavigator.Item
-                            title="全部"
-                            selected={this.state.selectedTab === 'all'}
-                            renderIcon={() => <Image style={styles.img} source={require("./../imgs/all_n.png")} />}
-                            renderSelectedIcon={() => <Image style={styles.img} source={require("./../imgs/all_p.png")} />}
-                            onPress={() => this.setState({ selectedTab: 'all' })}>
-                            <PageComp url="http://gank.io/api/data/all/" {...this.props}/>
-                        </TabNavigator.Item>
+                        {this._renderItem(PageComp, 'Android', 'Android', this.state.homeNormal, this.state.homeSelected)}
+                        {this._renderItem(PageComp, 'iOS', 'IOS', this.state.compassNormal, this.state.compassSelected)}
+                        {this._renderItem(SearchComp, 'all', '今日', this.state.collectionNormal, this.state.collectionSelected)}
+                        {this._renderItem(PageComp, 'xx', '更多', this.state.moreNormal, this.state.moreSelected)}
                     </TabNavigator>
                 </View>
             </DrawerLayoutAndroid>
@@ -70,16 +61,27 @@ export default class HomeComp extends BaseComp {
     toSearchComp() {
         super.pushNavigator({name: "SearchComp", component: SearchComp})
     }
+
+    _renderItem(Component, tab, tabName, normalIcon, selectedIcon) {
+        return (
+            <TabNavigator.Item
+                selected={this.state.selectedTab === tab}
+                title={tabName}
+                selectedTitleStyle={{color: selected}}
+                renderIcon={() => <Image style={styles.tabBarItemIcon} source={normalIcon}/>}
+                renderSelectedIcon={() => <Image style={[styles.tabBarItemIcon, {tintColor: selected}]}
+                                                 source={selectedIcon}/>}
+                onPress={() => this.setState({selectedTab: tab})}>
+                {<Component navigator={this.props.navigator} url={`http://gank.io/api/data/${tab}/`} show={"hidder"}/>}
+            </TabNavigator.Item>
+        );
+    }
 }
 
 const styles = StyleSheet.create({
     flex: {
         flex: 1,
         backgroundColor: "#FFF"
-    },
-    img: {
-        width: 30,
-        height: 30,
     },
     center: {
         justifyContent: 'center',
@@ -88,6 +90,9 @@ const styles = StyleSheet.create({
     bdTop: {
         borderTopWidth: 0.5,
         borderTopColor: "#EEE"
+    },
+    inputP:{
+        backgroundColor: selected
     },
     inputView: {
         height: 35,
@@ -106,7 +111,16 @@ const styles = StyleSheet.create({
     input: {
         paddingLeft: 5,
         fontSize: 12,
-        color: "#BBB"
+        color: selected
+    },
+    tabBarItemIcon: {
+        width: 20,
+        height: 20
+    },
+    tabBarStyle: {
+        height: 45,
+        alignItems: 'center',
+        paddingTop: 6
     }
 
 });

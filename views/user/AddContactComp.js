@@ -8,7 +8,6 @@ import {
 } from 'react-native'
 import Input from './../../compents/Input'
 export default class AddContactComp extends BaseComp {
-    mixins= [LinkedStateMixin]
     componentWillMount() {
         this.setState({
             title: "添加联系人",

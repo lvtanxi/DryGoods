@@ -29,8 +29,31 @@ const DateUtil = {
     dateStr(dateStr){
         if (!dateStr)
             return ""
-        dateStr = dateStr.toString().replace("T"," ");
-        return dateStr.substring(0,dateStr.lastIndexOf("."))
+        dateStr = dateStr.toString().replace("T", " ");
+        return dateStr.substring(0, dateStr.lastIndexOf("."))
+    },
+
+    preWoekDay(){
+        let data = new Date()
+        let day = data.getDay()
+        let yesterday_milliseconds = data.getTime()
+        if (day === 0) {
+            day = 3
+        } else if (day === 6) {
+            day = 1
+        } else {
+            day = data.getHours() < 12 ? 1 : 0
+        }
+        yesterday_milliseconds = yesterday_milliseconds - 1000 * 60 * 60 * 24 * day
+        let yesterday = new Date()
+        yesterday.setTime(yesterday_milliseconds)
+        let strYear = yesterday.getFullYear()
+        let strDay = yesterday.getDate()
+        let strMonth = yesterday.getMonth() + 1
+        if (strMonth < 10) {
+            strMonth = "0" + strMonth
+        }
+        return strYear + "/" + strMonth + "/" + strDay
     }
 
 }

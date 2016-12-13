@@ -5,6 +5,7 @@ import {
     Text,
     View
 } from 'react-native';
+import Utils from './Utils'
 export default class WaitingView extends Component {
 
     _onPress=()=>{
@@ -12,10 +13,11 @@ export default class WaitingView extends Component {
             this.props.callback.call(this)
     }
 
+
     render() {
         return (
             <TouchableNativeFeedback background={TouchableNativeFeedback.SelectableBackground()} onPress={this._onPress}>
-                <View style={wStyels.container}>
+                <View style={wStyels.container} >
                         <Text style={wStyels.text}>{this.props.hitText}</Text>
                 </View>
             </TouchableNativeFeedback>
@@ -25,7 +27,7 @@ export default class WaitingView extends Component {
 
 const wStyels=StyleSheet.create({
     container:{
-        flex:1,
+        width:Utils.size.width,
         height:44,
         backgroundColor:"#ffffff",
         justifyContent:"center",

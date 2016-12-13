@@ -18,7 +18,7 @@ import {
     ART,
     View
 } from 'react-native'
-const AsyncStorageKey ="USER"
+const AsyncStorageKey = "USER"
 let user = {
     userName: "lvy",
     passWorld: "123456"
@@ -27,13 +27,13 @@ export default class LoginComp extends BaseComp {
     componentWillMount() {
         this.setState({
             title: "登录界面",
-            userName:""
+            userName: ""
         })
-    /*    AsyncStorage.getItem(AsyncStorageKey)
-            .then((value) =>this.setState({
-                userName:value
-            }))
-            .done();*/
+        /*    AsyncStorage.getItem(AsyncStorageKey)
+         .then((value) =>this.setState({
+         userName:value
+         }))
+         .done();*/
     }
 
     renderChildeView() {
@@ -42,11 +42,13 @@ export default class LoginComp extends BaseComp {
                 <View style={BasicStyles.center_container}>
                     <Image source={require("./../../imgs/onepiece.jpg")} style={lStyles.img}/>
                 </View>
-                <Input leftText={"姓名"}   placeholder={"请输入姓名"} defaultValue={this.state.userName}/>
-                <Input leftText={"密码"}   placeholder={"请输入密码"} secureTextEntry={true}/>
-                <View  style={lStyles.login_btn}>
+                <View>
+                    <Input leftText={"姓名"} placeholder={"请输入姓名"} defaultValue={this.state.userName}/>
+                </View>
+                <Input leftText={"密码"} placeholder={"请输入密码"} secureTextEntry={true}/>
+                <View style={lStyles.login_btn}>
                     <Button
-                            onPress={this.doLogin.bind(this)} title="登录"/>
+                        onPress={this.doLogin.bind(this)} title="登录"/>
                 </View>
                 <View>
                     <CheckBox
@@ -60,7 +62,7 @@ export default class LoginComp extends BaseComp {
                 </View>
                 <View style={lStyles.register}>
                     <TouchableOpacity activeOpacity={0.5} onPress={this.register.bind(this)}>
-                    <Text style={lStyles.bottm}>还没有帐号？请点击注册吧！</Text>
+                        <Text style={lStyles.bottm}>还没有帐号？请点击注册吧！</Text>
                     </TouchableOpacity>
                 </View>
                 <RegisterDialog ref="dialog"/>
@@ -69,13 +71,13 @@ export default class LoginComp extends BaseComp {
 
     }
 
-    onCheckChange(isChecked){
-       this.setState({
-           isChecked:isChecked
-       })
+    onCheckChange(isChecked) {
+        this.setState({
+            isChecked: isChecked
+        })
     }
 
-    register(){
+    register() {
         this.refs.dialog.show()
     }
 
@@ -89,17 +91,18 @@ export default class LoginComp extends BaseComp {
                 .psot()
                 .bindUrl("http://10.13.0.48:3000/user/login")
                 .bindParams(user)
-                .bindOnSuccess(() =>this.saveName())
+                .bindOnSuccess(() => this.saveName())
                 .execute(this.refs.LoadingDialog)
         }
     }
-    saveName(){
-        if(this.state.isChecked){
-            AsyncStorage.setItem(AsyncStorageKey,user.userName).done()
-        }else {
+
+    saveName() {
+        if (this.state.isChecked) {
+            AsyncStorage.setItem(AsyncStorageKey, user.userName).done()
+        } else {
             AsyncStorage.removeItem(AsyncStorageKey).done()
         }
-        super.pushNavigatorBrief("ContactComp",ContactComp)
+        super.pushNavigatorBrief("ContactComp", ContactComp)
     }
 }
 
@@ -127,18 +130,18 @@ const lStyles = StyleSheet.create({
     login_btn: {
         marginLeft: 40,
         marginRight: 40,
-        padding:10,
+        padding: 10,
     },
-    register:{
-        marginTop:10,
-        marginRight:15,
-        alignItems:"flex-end"
+    register: {
+        marginTop: 10,
+        marginRight: 15,
+        alignItems: "flex-end"
     },
     bottm: {
-        fontSize:12
+        fontSize: 12
     },
-    box:{
-        marginLeft:20,
-        marginTop:5
+    box: {
+        marginLeft: 20,
+        marginTop: 5
     }
 })

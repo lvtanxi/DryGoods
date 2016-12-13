@@ -10,9 +10,8 @@ import {
     Text,
     View
 } from 'react-native';
-import BaseComp from './../compents/BaseComp'
+import BaseListComp from './../compents/BaseListComp'
 import HttpUtils from './../compents/HttpUtils'
-import LoadingView from './../compents/LoadingView'
 import {ImageView, CustToast} from './../compents/AndroidComp'
 import DateUtils from './../compents/DateUtils'
 import utils from '../compents/Utils'
@@ -20,50 +19,41 @@ import ImageDialog from '../compents/ImageDialog'
 import WebViewComp from './WebViewComp'
 
 
-export default class SearchComp extends BaseComp {
+export default class SearchComp extends BaseListComp {
+
     componentWillMount() {
-        let sectionData = (dataBlob, sectionID) => dataBlob[sectionID]
-        let rowData = (dataBlob, sectionID, rowID) => dataBlob[sectionID + ':' + rowID]
         this.setState({
-            dataSource: new ListView.DataSource({
-                getSectionData: sectionData, getRowData: rowData,
-                rowHasChanged: (r1, r2) => r1 !== r2,
-                sectionHeaderHasChanged: (s1, s2) => s1 !== s2
-            }),
             showImageDialog: false,
+            showToolBar: this.props.show ? false : true,
             title: "按日期搜索",
-            actions: [{title: '日期选择', icon: require("./../imgs/calendar.png"), show: 'always'}]
+            actions: [{title: '日期选择', icon: require("./../imgs/calendar.png"), show: 'always'}],
+            withSections: true,
+            contentContainerStyle: sStyles.listStyle
         })
+        this.date = DateUtils.preWoekDay()
     }
 
-    renderChildeView() {
+    renderOtherChildeView() {
         return (
-            this.state.loaded ?
-                <View style={[sStyles.flex, sStyles.bg]}>
-                    <ListView
-                        dataSource={this.state.dataSource}
-                        renderRow={this.renderRow}
-                        contentContainerStyle={sStyles.listStyle}
-                        renderSectionHeader={this.renderSectionHeader}/>
-                    <ImageDialog url={this.state.imageUrl} ref="dialog"/>
-                </View>
-                : <LoadingView />
+            <ImageDialog url={this.state.imageUrl} ref="dialog"/>
         )
     }
 
 
-    renderRow = (rowData, sectionId) => {
-        if (sectionId == 2) {
+    _renderRowView(rowData, sectionId) {
+        if (sectionId === "福利") {
             return (
-                <TouchableOpacity activeOpacity={0.5} onPress={this.onItemPress.bind(this, rowData.url, true)}>
-                    <ImageView url={rowData.url} style={[sStyles.imageView, {resizeMode: 'cover'}]}/>
-                </TouchableOpacity>
+               <View style={[sStyles.itemViewStyle,{justifyContent:"center"}]}>
+                   <TouchableOpacity activeOpacity={0.5} onPress={this.onItemPress.bind(this, rowData, true)}>
+                       <ImageView url={rowData.url} style={[sStyles.imageView, {resizeMode: 'cover'}]}/>
+                   </TouchableOpacity>
+               </View>
             )
         } else {
             return (
                 <View style={sStyles.itemViewStyle}>
                     <TouchableNativeFeedback background={TouchableNativeFeedback.SelectableBackground()}
-                                             onPress={this.onItemPress.bind(this, rowData.url, false)}>
+                                             onPress={this.onItemPress.bind(this, rowData, false)}>
                         <View style={sStyles.itemView}>
                             <View style={sStyles.flex}>
                                 <Text style={sStyles.desc} numberOfLines={2}>{rowData.desc}</Text>
@@ -80,65 +70,51 @@ export default class SearchComp extends BaseComp {
     }
 
 
-    renderSectionHeader = (sectionData) => {
+    _renderSectionHeader(sectionData, sectionID) {
         return (
-            <View style={sStyles.section}>
-                <Text style={sStyles.sectionData}>{sectionData}</Text>
+            <View style={sStyles.section} key={sectionID}>
+                <Text style={sStyles.sectionData}>{sectionID}</Text>
             </View>
         )
     }
 
-    onItemPress(tagUrl, isImage) {
+    onItemPress(rowData, isImage) {
         if (isImage) {
             this.setState({
-                imageUrl: tagUrl
+                imageUrl: rowData.url
             })
-            if(this.refs.dialog)
+            if (this.refs.dialog)
                 this.refs.dialog.show()
         } else {
             super.pushNavigator({
                 name: 'WebViewComp',
                 component: WebViewComp,
                 params: {
-                    url: tagUrl
+                    rowData: rowData
                 }
             })
         }
     }
 
-    componentDidMount() {
-        this.httpData(DateUtils.currentDate("yyyy/MM/dd"))
-    }
 
-    httpData(date) {
+    _onFetch(page = 1, endRefresh, options) {
+        if (this.date === null)
+            this.date = DateUtils.preWoekDay()
         new HttpUtils()
-            .bindUrl(`http://gank.io/api/day/${date}`)
-            .bindOnSuccess(datas => this.loadDataFormJson(datas))
-            .bindOnFinish(() => this.setState({
-                loaded: true
-            }))
+            .bindUrl(`http://gank.io/api/day/${ this.date}`)
+            .bindOnSuccess(datas => this.loadDataFormJson(datas, endRefresh))
+            .bindOnError(error => endRefresh())
             .execute()
+        this.date = null
     }
 
-    loadDataFormJson(datas) {
-        let dataBlob = {}, sectionIDs = [], rowIDs = [], titles = ["Android", "iOS", "福利"]
+    loadDataFormJson(datas, endRefresh) {
 
-        titles.forEach((item, index) => {
-            sectionIDs.push(index);
-            //把组中内容放入dataBlob对象中
-            dataBlob[index] = item;
-            let news = datas[item]
-            rowIDs[index] = []
-            for (var j = 0; j < news.length; j++) {
-                rowIDs[index].push(j);
-                //把每一行中的内容放入dataBlob对象中
-                dataBlob[index + ':' + j] = news[j];
-            }
+        let rows = {}, titles = ["Android", "iOS", "福利"]
+        titles.forEach(item => {
+            rows[item] = datas[item]
         })
-        let that = this
-        this.setState({
-            dataSource: that.state.dataSource.cloneWithRowsAndSections(dataBlob, sectionIDs, rowIDs)
-        })
+        endRefresh(rows, {allLoaded: true});
     }
 
     actionSelected() {
@@ -155,7 +131,8 @@ export default class SearchComp extends BaseComp {
                     month: month,
                     day: day
                 });
-                this.httpData(`${year}/${month + 1}/${day}`)
+                this.date = `${year}/${month + 1}/${day}`
+                this._ListView._refresh()
             }
         } catch ({code, message}) {
             CustToast.error(message);
@@ -187,8 +164,7 @@ const sStyles = StyleSheet.create({
     },
     imageView: {
         width: utils.size.width / 2 - 20,
-        height: 80,
-        margin: 10
+        height: 80
     },
     section: {
         width: utils.size.width,
