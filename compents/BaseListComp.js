@@ -46,6 +46,9 @@ export default class BaseListComp extends BaseComp {
     _renderRowView(rowData) {
 
     }
+ /*   _onEndReached(){
+        this._ListView._onPaginate()
+    }*/
 
     _onFetch(page = 1, endRefresh, options) {
 

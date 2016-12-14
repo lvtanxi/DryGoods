@@ -13,8 +13,5 @@ export default class ShareUtil{
     }
 
     _showResult(result) {
-        if (result.action === Share.sharedAction) {
-            CustToast.success('分享成功')
-        }
     }
 }

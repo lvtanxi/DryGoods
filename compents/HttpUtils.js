@@ -47,8 +47,7 @@ export default class HttpUtils {
     dismissDialog(success) {
         if (this.dialog && this.dialog.isShow())
             this.dialog.dismiss()
-        if (this.onFinish)
-            this.onFinish(success)
+        this.onFinish && this.onFinish(success)
     }
 
     showDialog(dialog) {
@@ -73,15 +72,13 @@ export default class HttpUtils {
             .then((responseJson) => {
                 if (responseJson.code && responseJson.code !== 200)
                     throw new Error(responseJson.message)
-                if (that.onSuccess)
-                    that.onSuccess(responseJson.results)
+                that.onSuccess && that.onSuccess(responseJson.results)
                 that.dismissDialog(true)
             })
             .catch((error) => {
                 console.log(error.toString())
                 CustToast.error(error.message)
-                if (that.onError)
-                    that.onError(error)
+                that.onError && that.onError(error)
                 that.dismissDialog(false)
             }).done()
     }

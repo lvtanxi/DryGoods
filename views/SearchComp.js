@@ -26,7 +26,7 @@ export default class SearchComp extends BaseListComp {
             showImageDialog: false,
             showToolBar: this.props.show ? false : true,
             title: "按日期搜索",
-            actions: [{title: '日期选择', icon: require("./../imgs/calendar.png"), show: 'always'}],
+            rightBtn: {rightBtnIcon: "md-calendar"},
             withSections: true,
             contentContainerStyle: sStyles.listStyle
         })
@@ -43,7 +43,7 @@ export default class SearchComp extends BaseListComp {
     _renderRowView(rowData, sectionId) {
         if (sectionId === "福利") {
             return (
-               <View style={[sStyles.itemViewStyle,{justifyContent:"center"}]}>
+               <View style={[sStyles.itemViewStyle,{justifyContent:"center", alignItems:"center"}]}>
                    <TouchableOpacity activeOpacity={0.5} onPress={this.onItemPress.bind(this, rowData, true)}>
                        <ImageView url={rowData.url} style={[sStyles.imageView, {resizeMode: 'cover'}]}/>
                    </TouchableOpacity>
@@ -117,7 +117,7 @@ export default class SearchComp extends BaseListComp {
         endRefresh(rows, {allLoaded: true});
     }
 
-    actionSelected() {
+    navigationBarOnPress() {
         this.showDatePicker()
     }
 
@@ -158,9 +158,13 @@ const sStyles = StyleSheet.create({
         flex: 1,
         margin: 5,
         padding: 5,
-        borderColor: "#EEE",
+        borderColor: "#CCC",
         borderWidth: 0.5,
-        borderRadius: 3
+        borderRadius: 3,
+        shadowColor: 'rgb(0,0,0)',
+        shadowOffset: {height: 2, width: 1},
+        shadowOpacity: 0.25,
+        shadowRadius: 3
     },
     imageView: {
         width: utils.size.width / 2 - 20,

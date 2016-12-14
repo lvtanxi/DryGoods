@@ -3,11 +3,12 @@ import {
     StyleSheet,
     Text,
     ScrollView,
-    TouchableNativeFeedback,
     View
 } from 'react-native';
 
 import BaseComp from './../compents/BaseComp'
+import ImageText from './../compents/ImageText'
+import NavigationBar from './../compents/NavigationBar'
 import TasksComp from './TasksComp'
 import LoginComp from './user/LoginComp'
 
@@ -31,14 +32,12 @@ export default class DrawerLayoutComp extends BaseComp {
     renderChildeView() {
         return (
             <View style={dStyles.flex}>
-                <Text style={dStyles.header}>Node基本使用</Text>
+                <NavigationBar title={"Node的基本使用"}/>
                 <ScrollView style={dStyles.scro}>
-                    {this.state.messages.map((item,index) => {
+                    {this.state.messages.map((item, index) => {
                         return (
-                            <TouchableNativeFeedback onPress={this.itemPress.bind(this,item)}
-                                                     background={TouchableNativeFeedback.SelectableBackground()} key={index}>
-                                <Text style={dStyles.scro_item}>{item.title}</Text>
-                            </TouchableNativeFeedback>
+                            <ImageText icon={"ios-pricetags-outline"} title={item.title}
+                                       onPress={this.itemPress.bind(this, item)} key={index} style={dStyles.scro_item}/>
                         )
                     })}
                 </ScrollView>
@@ -47,7 +46,7 @@ export default class DrawerLayoutComp extends BaseComp {
     }
 
     itemPress(item) {
-        super.pushNavigatorBrief(item.title,item.cont)
+        super.pushNavigatorBrief(item.title, item.cont)
     }
 }
 
@@ -59,18 +58,20 @@ const dStyles = StyleSheet.create({
     header: {
         marginTop: 10,
         fontSize: 16,
-        fontWeight: "bold"
+        fontWeight: "bold",
+        color: "#ffffff"
     },
     scro: {
         marginTop: 20
     },
     scro_item: {
-        marginTop:5,
-        paddingTop: 10,
-        paddingBottom: 10,
-        paddingRight: 25,
-        paddingLeft: 25,
-        borderColor: "#EEE",
+        marginTop: 10,
+        flexDirection:"row",
+        paddingLeft:50,
+        paddingRight:50,
+        paddingBottom:10,
+        paddingTop:10,
+        borderColor: "#CCC",
         borderWidth: 0.5,
         borderRadius: 3
     }

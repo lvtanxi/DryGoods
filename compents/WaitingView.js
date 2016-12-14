@@ -1,4 +1,4 @@
-import React, {Component} from 'react'
+import React, {Component, PropTypes} from 'react'
 import {
     StyleSheet,
     TouchableNativeFeedback,
@@ -8,33 +8,45 @@ import {
 import Utils from './Utils'
 export default class WaitingView extends Component {
 
-    _onPress=()=>{
-        if(this.props.callback)
+    static propTypes = {
+        hitText: PropTypes.string,
+        rippleColor: PropTypes.string,
+        color: PropTypes.string,
+        textStyle: Text.propTypes.style
+    }
+
+    static defaultProps = {
+        rippleColor: "#E8E8E8",
+        color: "#ffffff"
+    }
+
+    _onPress = () => {
+        if (this.props.callback)
             this.props.callback.call(this)
     }
 
 
     render() {
         return (
-            <TouchableNativeFeedback background={TouchableNativeFeedback.SelectableBackground()} onPress={this._onPress}>
-                <View style={wStyels.container} >
-                        <Text style={wStyels.text}>{this.props.hitText}</Text>
+            <TouchableNativeFeedback background={TouchableNativeFeedback.Ripple(this.props.rippleColor, false)}
+                                     onPress={this._onPress}>
+                <View style={[wStyels.container, {backgroundColor: this.props.color}]}>
+                    <Text style={this.props.textStyle || wStyels.text}>{this.props.hitText}</Text>
                 </View>
             </TouchableNativeFeedback>
         )
     }
 }
 
-const wStyels=StyleSheet.create({
-    container:{
-        width:Utils.size.width,
-        height:44,
-        backgroundColor:"#ffffff",
-        justifyContent:"center",
-        alignItems:"center"
+const wStyels = StyleSheet.create({
+    container: {
+        width: Utils.size.width,
+        height: 44,
+        justifyContent: "center",
+        alignItems: "center"
     },
-    text:{
-        fontSize:14,
-        color:"blue"
+    text: {
+        fontSize: 14,
+        color: "blue"
     }
 })

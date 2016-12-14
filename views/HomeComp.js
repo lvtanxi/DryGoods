@@ -26,8 +26,6 @@ export default class HomeComp extends BaseComp {
         Icon.getImageSource('logo-android', 50, selected).then((source) => this.setState({homeSelected: source}));
         Icon.getImageSource('logo-apple', 50,normal).then((source) => this.setState({compassNormal: source}));
         Icon.getImageSource('logo-apple', 50, selected).then((source) => this.setState({compassSelected: source}));
-        Icon.getImageSource('md-list-box', 50,normal).then((source) => this.setState({moreNormal: source}));
-        Icon.getImageSource('md-list-box', 50, selected).then((source) => this.setState({moreSelected: source}));
         Icon.getImageSource('md-calendar', 50,normal).then((source) => this.setState({collectionNormal: source}));
         Icon.getImageSource('md-calendar', 50, selected).then((source) => this.setState({collectionSelected: source}));
         Icon.getImageSource('md-search', 20, selected).then((source) => this.setState({search: source}));
@@ -51,7 +49,6 @@ export default class HomeComp extends BaseComp {
                         {this._renderItem(PageComp, 'Android', 'Android', this.state.homeNormal, this.state.homeSelected)}
                         {this._renderItem(PageComp, 'iOS', 'IOS', this.state.compassNormal, this.state.compassSelected)}
                         {this._renderItem(SearchComp, 'all', '今日', this.state.collectionNormal, this.state.collectionSelected)}
-                        {this._renderItem(PageComp, 'xx', '更多', this.state.moreNormal, this.state.moreSelected)}
                     </TabNavigator>
                 </View>
             </DrawerLayoutAndroid>

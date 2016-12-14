@@ -1,5 +1,6 @@
 import React, {Component} from 'react'
 import LoadingDialog from './LoadingDialog'
+import NavigationBar from './NavigationBar'
 import {
     BackAndroid,
     ToolbarAndroid,
@@ -10,29 +11,30 @@ import {
 export default class BaseComp extends Component {
     state = {
         title: this.props.title,
-        actions: [],
         showToolBar: true,
+        rightBtn: {}
     }
 
     render() {
-        let toolbar = this.state.showToolBar ? (
-            <ToolbarAndroid
-                ref={(c) => this._Toolbar = c}
-                navIcon={require('./../imgs/back_new.png')}
-                title={this.state.title}
-                actions={this.state.actions}
-                style={bStyles.toobar}
-                titleColor={"#ffffff"}
-                onActionSelected={this.actionSelected.bind(this)}
-                onIconClicked={this.handleBack.bind(this)}/>
-        ) : null
 
         return (
             <View style={bStyles.flex}>
-                {toolbar}
+                {this.renderNavigationBar()}
                 {this.renderChildeView()}
                 <LoadingDialog ref="LoadingDialog"/>
             </View>
+        )
+    }
+
+    renderNavigationBar() {
+        return (
+            this.state.showToolBar ?
+                <NavigationBar title={this.state.title}
+                               leftBtnIcon={"md-arrow-back"}
+                               leftBtnPress={this.handleBack.bind(this)}
+                               rightBtnIcon={this.state.rightBtn.rightBtnIcon}
+                               rightBtnText={this.state.rightBtn.rightBtnText}
+                               rightBtnPress={this.navigationBarOnPress.bind(this)}/> : null
         )
     }
 
@@ -40,6 +42,10 @@ export default class BaseComp extends Component {
         return (
             <View></View>
         )
+    }
+
+    navigationBarOnPress() {
+
     }
 
 
@@ -61,20 +67,11 @@ export default class BaseComp extends Component {
             navigator.push(params)
     }
 
+
     pushNavigatorBrief(title, tagComponent, param) {
-        let navigator = this.props.navigator
-        if (navigator)
-            navigator.push({
-                name:title,
-                component: tagComponent,
-                params: param
-            })
+        this.pushNavigator({name: title, component: tagComponent, params: param})
     }
 
-
-    actionSelected(position) {
-
-    }
 
     handleBack() {
         let navigator = this.props.navigator

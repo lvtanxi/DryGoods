@@ -118,7 +118,8 @@ export default class RefreshListView extends Component {
 
     paginationAllLoadedView = () => {
         return (
-            <WaitingView hitText="没有更多数据了..."/>
+            <WaitingView hitText="-- end --" textStyle={rStyles.more} rippleColor={"transparent"}
+                         color={"transparent"}/>
         )
     }
 
@@ -266,7 +267,7 @@ export default class RefreshListView extends Component {
         } else if (this._getRows().length === 0 && this.state.paginationStatus !== 'firstLoad') {
             return this.emptyView(this._onRefresh)
         } else if (this.state.paginationStatus === 'waiting' && this.props.pagination === true && (this.props.withSections === true || this._getRows().length > 0)) {
-            return this.paginationWaitingView(this._onPaginate)
+            return this.props.onEndReached ? null : this.paginationWaitingView(this._onPaginate)
         } else if (this.state.paginationStatus === 'allLoaded' && this.props.pagination === true) {
             return this.paginationAllLoadedView()
         } else {
@@ -302,6 +303,9 @@ export default class RefreshListView extends Component {
                 enableEmptySections={true}
                 renderFooter={this._renderPaginationView}
                 renderSeparator={this.renderSeparator}
+                removeClippedSubviews={true}
+                initialListSize={10}
+                pageSize={10}
                 automaticallyAdjustContentInsets={false}
                 scrollEnabled={this.props.scrollEnabled}
                 canCancelContentTouches={true}
@@ -313,6 +317,7 @@ export default class RefreshListView extends Component {
             />
         )
     }
+
 
     _getSpinner = () => {
         if (Platform.OS === 'android') {
@@ -357,6 +362,9 @@ const rStyles = StyleSheet.create({
         fontSize: 16,
         fontWeight: 'bold',
         marginBottom: 15,
+    },
+    more: {
+        color: "gray"
     }
 })
 

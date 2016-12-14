@@ -9,6 +9,7 @@ import {
 
 import {ImageView} from './../compents/AndroidComp'
 import HttpUtils from './../compents/HttpUtils'
+import ImageText from './../compents/ImageText'
 import BaseListComp from './../compents/BaseListComp'
 import DateUtils from './../compents/DateUtils'
 import WebViewComp from './WebViewComp'
@@ -61,8 +62,18 @@ export default class PageComp extends BaseListComp {
                             <Text style={styles.desc} numberOfLines={2}>{rowData.desc}</Text>
                         </View>
                         <View>
-                            <Text style={styles.author}>{rowData.who}</Text>
-                            <Text style={styles.info}>{DateUtils.dateStr(rowData.createdAt)}</Text>
+                            <ImageText title={rowData.who}
+                                       icon={"ios-create-outline"}
+                                       textStyle={styles.author}
+                                       iconSize={15}
+                                       rippleColor={"#ffffff"}
+                                       style={styles.dateView}/>
+                            <ImageText title={DateUtils.dateStr(rowData.createdAt)}
+                                       icon={"ios-ice-cream-outline"}
+                                       iconSize={15}
+                                       rippleColor={"#ffffff"}
+                                       textStyle={styles.info}
+                                       style={styles.dateView}/>
                         </View>
                     </View>
                 </View>
@@ -81,7 +92,7 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         padding: 10,
         borderBottomWidth: 0.5,
-        borderBottomColor: "#EEE",
+        borderBottomColor: "#CCC",
         backgroundColor: "#FFF"
     },
     right: {
@@ -104,5 +115,10 @@ const styles = StyleSheet.create({
     author: {
         fontSize: 12,
         color: "black"
+    },
+    dateView:{
+        height:20,
+        flexDirection: 'row',
+        alignItems:"center"
     }
 })

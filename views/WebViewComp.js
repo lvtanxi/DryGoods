@@ -5,8 +5,8 @@ import {
     WebView,
     PanResponder,
     Image,
-    Modal,
-    TouchableOpacity,
+    TouchableNativeFeedback,
+    Alert,
     Linking,
     Animated,
     Text,
@@ -15,16 +15,24 @@ import {
 } from 'react-native';
 import BaseComp from './../compents/BaseComp'
 import Utils from './../compents/Utils'
-import px2dp from './../compents/px2dp'
 import ShareUtil from './../compents/ShareUtil'
 import {CustToast} from './../compents/AndroidComp'
 import LoadingView from './../compents/LoadingView'
+import BottomSheetDialog from './../compents/BottomSheetDialog'
 import Icon from 'react-native-vector-icons/Ionicons';
-let bottomIconNames = ['md-arrow-round-back',
-    'md-arrow-round-forward',
+let bottomIconNames = ['md-arrow-back',
+    'md-arrow-forward',
     'md-refresh'
 ]
-let bottomIconSize = [px2dp(35), px2dp(35), px2dp(35)];
+let bottomActions = [
+    {title: '查看完整标题', icon: "ios-paper-outline"},
+    {title: '复制链接', icon: "ios-clipboard-outline"},
+    {title: '在浏览器中打开', icon: "ios-open-outline"},
+    {title: '分享此内容', icon: "ios-share-outline"}
+]
+
+
+let bottomIconSize = [30, 30, (35)];
 export default class WebViewComp extends BaseComp {
     moveYThreshold = 5
     animationFlag = true
@@ -33,7 +41,8 @@ export default class WebViewComp extends BaseComp {
     componentWillMount() {
         this.setState({
             bottomInfoBarBottomValue: new Animated.Value(0),
-            actions: [{title: "复制链接"}, {title: "在浏览器中打开"}, {title: "分享此内容"}]
+            rightBtn: {rightBtnIcon: "md-more"},
+            showMoreContent: false
         })
         this._panResponder = PanResponder.create({
             onMoveShouldSetPanResponder: (evt, gestureState) => true,
@@ -43,36 +52,33 @@ export default class WebViewComp extends BaseComp {
                     if (this.state.bottomInfoBarBottomValue === 0) return;
                     this.animationFlag = false;
                     Animated.timing(this.state.bottomInfoBarBottomValue, {
-                        toValue: px2dp(-56),
+                        toValue: -50,
                         duration: 300
                     }).start(() => this.animationFlag = true);
                 }
                 if (y < -this.moveYThreshold && this.animationFlag) {  //drag up
-                    if (this.state.bottomInfoBarBottomValue === px2dp(-56)) return;
+                    if (this.state.bottomInfoBarBottomValue ===-50) return;
                     this.animationFlag = false;
                     Animated.timing(this.state.bottomInfoBarBottomValue, {
                         toValue: 0,
                         duration: 300
                     }).start(() => this.animationFlag = true);
-                    // Animated.timing(this.state.toolbarTopValue, {
-                    //     toValue: -theme.toolbar.height,
-                    //     duration: 300
-                    // }).start();
                 }
             }
         });
     }
 
-    actionSelected(position) {
-        this._btnOnPressCallback(position + 4)
+    navigationBarOnPress() {
+        this.refs.sheetDialog.show()
     }
+
 
     _renderError() {
         return (
-            <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+            <View style={{flex: 1, justifyContent: 'center', alignItems: 'center', zIndex: 1}}>
                 <Text>Oooops~, 出错了, 重新刷新下吧～</Text>
             </View>
-        );
+        )
     }
 
     renderChildeView() {
@@ -99,16 +105,18 @@ export default class WebViewComp extends BaseComp {
                 <Animated.View style={[wStyles.bottomTab, {height: this.state.bottomInfoBarBottomValue}]}>
                     {bottomIconNames.map((item, i) => {
                         return (
-                            <View key={i} style={{flex: 1, alignItems: 'center',height:56,justifyContent:"center"}}>
-                                <TouchableOpacity
-                                    onPress={this._btnOnPressCallback.bind(this, i + 1)}
-                                    activeOpacity={0.5}>
+                            <View key={i} style={{flex: 1, alignItems: 'center', height: 50, justifyContent: "center"}}>
+                                <TouchableNativeFeedback
+                                    onPress={this._btnOnPressCallback.bind(this, i + 4)}
+                                background={TouchableNativeFeedback.SelectableBackgroundBorderless()}>
                                     <Icon name={item} color="#1e90ff" size={bottomIconSize[i]}/>
-                                </TouchableOpacity>
+                                </TouchableNativeFeedback>
                             </View>
                         )
                     })}
                 </Animated.View>
+                <BottomSheetDialog ref="sheetDialog" actions={bottomActions}
+                                   onPress={this._btnOnPressCallback.bind(this)}/>
             </View>
         )
     }
@@ -116,6 +124,7 @@ export default class WebViewComp extends BaseComp {
     _onNavigationStateChange = (param) => {
         this.setState(param)
     }
+
 
     handleBack() {
         if (this.state.canGoBack && this.webView) {
@@ -125,17 +134,16 @@ export default class WebViewComp extends BaseComp {
         return super.handleBack()
     }
 
-    _btnOnPressCallback(id) {
-        if (id === 1) {
-            this.webView.goBack();
-        } else if (id === 2) {
-            this.webView.goForward();
-        } else if (id === 3) {
-            this.webView.reload();
-        } else if (id === 4) {
+    _btnOnPressCallback(position) {
+        if (position === 0) {
+            Alert.alert("完成的标题如下：", this.props.rowData.desc, [{
+                text: '好的', onPress: () => {
+                }
+            }]);
+        } else if (position === 1) {
             Clipboard.setString(this.props.rowData.url);
             CustToast.success("地址已经复制到剪贴板");
-        } else if (id === 5) {
+        } else if (position === 2) {
             Linking.canOpenURL(this.props.rowData.url).then(supported => {
                 if (supported) {
                     Linking.openURL(this.props.rowData.url);
@@ -143,12 +151,20 @@ export default class WebViewComp extends BaseComp {
                     CustToast.error("对不起,不能再浏览器中打开");
                 }
             });
-        } else if (id === 6) {
+        } else if (position === 3) {
             let share = new ShareUtil();
             share.share(this.props.rowData.desc, this.props.rowData.url);
+        } else if (position === 4) {
+            this.webView.goBack();
+        } else if (position === 5) {
+            this.webView.goForward();
+        } else if (position === 6) {
+            this.webView.reload();
+        } else {
+            if (this.state.showMoreContent)
+                this.navigationBarOnPress()
         }
     }
-
 }
 
 const wStyles = StyleSheet.create({
@@ -158,11 +174,13 @@ const wStyles = StyleSheet.create({
     bottomTab: {
         position: 'absolute',
         bottom: 0,
-        height: px2dp(56),
+        height: 50,
         width: Utils.size.width,
         flexDirection: 'row',
         alignItems: 'center',
-        backgroundColor:"#E8E8E8",
+        backgroundColor: "#F8F8FF",
+        borderTopWidth: 0.5,
+        borderTopColor: "#EEE",
         zIndex: 1
     }
 })
